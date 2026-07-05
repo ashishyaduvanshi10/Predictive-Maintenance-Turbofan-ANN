@@ -34,3 +34,35 @@ train_data_clean = train_data_clean.drop(columns=['max_cycle'])
 print("RUL target feature engineering complete!")
 print("\nFirst 5 rows of calculated RUL dataset structure:")
 print(train_data_clean[['engine_id', 'cycle', 'RUL']].head())
+
+print("\n--- FEATURE SCALING & ANN MODEL BUILDING ---")
+
+# 1. Separate features (X) and target/answer (y)
+# We exclude 'engine_id', 'cycle' (identifiers) and 'RUL' (target variable itself) from features
+features = [col for col in train_data_clean.columns if col not in ['engine_id', 'cycle', 'RUL']]
+X_train = train_data_clean[features]
+y_train = train_data_clean['RUL']
+
+# 2. Scale features between 0 and 1 so the Neural Network learns efficiently
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+print("Features scaled successfully. Training input shape:", X_train_scaled.shape)
+
+# 3. Build the Artificial Neural Network (ANN) structure using TensorFlow/Keras
+from tensorflow.keras import models, layers
+
+model = models.Sequential([
+    # Input Layer + First Hidden Layer (32 neurons)
+    layers.Dense(32, activation='relu', input_shape=(X_train_scaled.shape[1],)),
+    # Second Hidden Layer (16 neurons)
+    layers.Dense(16, activation='relu'),
+    # Output Layer (1 neuron to predict a single continuous value: RUL)
+    layers.Dense(1, activation='linear')
+])
+
+# 4. Compile the model with Adam optimizer and Mean Squared Error loss for regression
+model.compile(optimizer='adam', loss='mse', metrics=['mae'])
+
+print("ANN Model compiled successfully! Here is the architecture summary:")
+model.summary()
