@@ -66,3 +66,17 @@ model.compile(optimizer='adam', loss='mse', metrics=['mae'])
 
 print("ANN Model compiled successfully! Here is the architecture summary:")
 model.summary()
+
+
+print("\n--- TRAINING THE ANN MODEL ---")
+# We will train the model for 20 epochs with a batch size of 32
+# validation_split=0.2 means 20% of the data will be used to check accuracy during training
+history = model.fit(
+    X_train_scaled, y_train,
+    epochs=20,
+    batch_size=32,
+    validation_split=0.2,
+    verbose=1
+)
+
+print("Model training completed successfully over 20 epochs!")
