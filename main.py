@@ -98,3 +98,23 @@ X_test_scaled = scaler.transform(X_test)
 # 5. Predict RUL using our trained ANN model
 predictions = model.predict(X_test_scaled)
 print("Predictions calculated successfully! Total test predictions:", len(predictions))
+
+
+print("\n--- PLOTTING TRAINING LOSS CURVE ---")
+
+import matplotlib.pyplot as plt
+
+# Plotting Training Loss vs Validation Loss over Epochs to visually verify convergence
+plt.figure(figsize=(10, 6))
+plt.plot(history.history['loss'], label='Training Loss (MSE)', color='blue', linewidth=2)
+plt.plot(history.history['val_loss'], label='Validation Loss (MSE)', color='red', linewidth=2)
+
+plt.title('ANN Model Training History (Loss Convergence)', fontsize=14)
+plt.xlabel('Epochs', fontsize=12)
+plt.ylabel('Mean Squared Error (Loss)', fontsize=12)
+plt.legend(fontsize=11)
+plt.grid(True, linestyle='--', alpha=0.6)
+
+# Save the plot as an image file in the project folder
+plt.savefig('training_loss_curve.png')
+print("Training loss curve graph saved successfully as 'training_loss_curve.png'!")
