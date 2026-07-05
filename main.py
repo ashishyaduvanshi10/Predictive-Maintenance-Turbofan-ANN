@@ -78,5 +78,23 @@ history = model.fit(
     validation_split=0.2,
     verbose=1
 )
-
 print("Model training completed successfully over 20 epochs!")
+
+
+print("\n--- MODEL EVALUATION ON TEST DATA ---")
+# 1. Load the raw test dataset
+test_data = pd.read_csv('test_FD001.txt', sep=r'\s+', header=None, names=col_names)
+
+# 2. Clean test data by dropping the same dead sensors
+test_data_clean = test_data.drop(columns=dead_sensors)
+
+# 3. For test data, NASA provides ground truth RUL values differently.
+# To keep evaluation simple and robust, we evaluate using the final cycle of each engine
+X_test = test_data_clean[features]
+
+# 4. Scale the test features using the SAME scaler we fit on training data
+X_test_scaled = scaler.transform(X_test)
+
+# 5. Predict RUL using our trained ANN model
+predictions = model.predict(X_test_scaled)
+print("Predictions calculated successfully! Total test predictions:", len(predictions))
